@@ -1,0 +1,9 @@
+{
+  "mode": "pretend",
+  "operations": [
+    {
+      "operationType": "cancelOrder",
+      "params": { "orderId": "1234", "reason": "The customer gave up buying" }
+    }
+  ]
+}

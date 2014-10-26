@@ -1,0 +1,26 @@
+{
+  "realized": [
+    {
+      "operationType": "cancelOrder",
+      "params": { "orderId": "1234", "reason": "The customer gave up buying" },
+      "id": "4bf215b117a0523d04c3625a2a9a808674c45331", /* `echo -n '{"cancelOrder":{"orderId":"1234","reason":"The customer gave up buying"}}' | openssl dgst -sha1` */
+      "result": { "status": "00" }
+    },
+    {
+      "operationType": "cancelPrepaidCard",
+      "params": { "cardId": "1234", "reason": "The customer gave up buying" },
+      "id": "5d89f241f2dee230d0e03849dedd52e47719bc4c", /* `echo -n '{"cancelPrepaidCard":{"cardId":"1234","reason":"The customer gave up buying"}}' | openssl dgst -sha1` */
+      "trigger": "4bf215b117a0523d04c3625a2a9a808674c45331",
+      "data": { "cardNumber": "512345******1234", "prevSituation": "A", "balance": "25.00" }, /* What was found about that */
+      "result": { "status": "00" }
+    },
+    {
+      "operationType": "revertCharge",
+      "params": { "amount": "25.00", "transactionId": "1234", "reason": "The customer gave up buying" },
+      "id": "6e118e2140ac9cbe20ea90b19d6d85d690f55531", /* `echo -n '{"revertCharge":{"amount":"25.00","transactionId":"1234","reason":"The customer gave up buying"}}' | openssl dgst -sha1` */
+      "trigger": "5d89f241f2dee230d0e03849dedd52e47719bc4c",
+      "data": { "prevSituation": "A", "amount": "50.00" }, /* What was found about that */
+      "result": { "status": "00", "reversionType": "partial", "docId": "????" }
+    }
+  ]
+}
