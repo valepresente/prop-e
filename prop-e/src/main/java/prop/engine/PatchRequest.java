@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class PatchRequest {
 
 	private List<PropOperation> operations = new ArrayList<>();
-	private List<PropOperation> effectiveOperations = new ArrayList<>();
 
 
 	public PatchRequest(JsonNode operations) {
@@ -25,10 +24,6 @@ public class PatchRequest {
 
 	public List<PropOperation> getOperations() {
 		return operations;
-	}
-
-	public List<PropOperation> getEffectiveOperations() {
-		return effectiveOperations;
 	}
 
 }
