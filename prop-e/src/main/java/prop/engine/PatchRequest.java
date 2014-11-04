@@ -10,8 +10,6 @@ public class PatchRequest {
 	private List<PropOperation> operations = new ArrayList<>();
 	private List<PropOperation> effectiveOperations = new ArrayList<>();
 
-	private PatchResponse response = new PatchResponse();
-
 
 	public PatchRequest(JsonNode operations) {
 		loadOperations(operations);
@@ -21,8 +19,8 @@ public class PatchRequest {
 		// TODO: load operations from JsonNode
 	}
 
-	public PatchResponse getResponse() {
-		return response;
+	public PatchResponse emptyResponse() {
+		return new PatchResponse();
 	}
 
 	public List<PropOperation> getOperations() {

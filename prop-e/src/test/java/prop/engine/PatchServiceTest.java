@@ -27,7 +27,8 @@ public class PatchServiceTest extends AbstractTestCase {
 		JsonNode cancelOrderData = new ObjectMapper().readTree(this.getClass().getClassLoader()
 				.getResourceAsStream("prop/engine/fixtures/PatchService-pretendCancelOrder.json"));
 		PatchRequest request = new PatchRequest(cancelOrderData);
-		service.pretend(request);
+		PatchMessage message = new PatchMessage(request);
+		service.pretend(message);
 		// TODO: more assertions required
 	}
 

@@ -13,8 +13,8 @@ public class PatchService {
 
 	@Autowired private PretendModeResolver pretendResolver;
 
-	public void pretend(PatchRequest request) {
-		getPretendResolver().process(request);
+	public void pretend(PatchMessage message) {
+		getPretendResolver().process(message);
 	}
 
 	PretendModeResolver getPretendResolver() {

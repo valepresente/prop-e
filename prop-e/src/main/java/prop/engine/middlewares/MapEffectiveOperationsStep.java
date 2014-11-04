@@ -4,13 +4,13 @@ import org.springframework.stereotype.Service;
 
 import prop.core.patterns.cor.Chain;
 import prop.core.patterns.cor.Middleware;
-import prop.engine.PatchRequest;
+import prop.engine.PatchMessage;
 
 @Service
-public class MapEffectiveOperationsStep implements Middleware<PatchRequest> {
+public class MapEffectiveOperationsStep implements Middleware<PatchMessage> {
 
 	@Override
-	public void call(Chain<PatchRequest> chain) {
+	public void call(Chain<PatchMessage> chain) {
 		// TODO: implementation
 	}
 
