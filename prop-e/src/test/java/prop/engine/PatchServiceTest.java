@@ -28,8 +28,9 @@ public class PatchServiceTest extends AbstractTestCase {
 				.getResourceAsStream("prop/engine/fixtures/PatchService-pretendCancelOrder.json"));
 		PatchRequest request = new PatchRequest(cancelOrderData);
 		PatchMessage message = new PatchMessage(request);
+		assertEquals(0, message.getEffectiveOperations().size());
 		service.pretend(message);
-		// TODO: more assertions required
+		assertEquals(1, message.getEffectiveOperations().size());
 	}
 
 }

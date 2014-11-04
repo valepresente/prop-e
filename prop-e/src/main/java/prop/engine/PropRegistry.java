@@ -1,5 +1,6 @@
 package prop.engine;
 
+import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
@@ -22,6 +23,10 @@ public class PropRegistry {
 	public void register(PropProcessor processor) {
 		if (processor != null)
 			registry.put(processor.getOperationType(), processor);
+	}
+
+	public Enumeration<PropProcessor> getProcessors() {
+		return registry.elements();
 	}
 
 }
