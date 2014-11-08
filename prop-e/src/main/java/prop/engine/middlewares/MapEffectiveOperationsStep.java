@@ -27,6 +27,7 @@ public class MapEffectiveOperationsStep implements Middleware<PatchMessage> {
 		for (PropOperation op : operations) {
 			mapEffectiveOperations(op, effectiveOperations);
 		}
+		chain.next();
 	}
 
 	private void mapEffectiveOperations(PropOperation op,
