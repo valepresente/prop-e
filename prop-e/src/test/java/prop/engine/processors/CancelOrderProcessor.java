@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import prop.engine.PropOperation;
 import prop.engine.PropRegistry;
+import prop.engine.TriggeredPropOperation;
 
 @Service
 public class CancelOrderProcessor implements PropProcessor {
@@ -22,7 +23,7 @@ public class CancelOrderProcessor implements PropProcessor {
 	}
 
 	@Override
-	public List<PropOperation> map(PropOperation operation) {
+	public List<TriggeredPropOperation> map(PropOperation operation) {
 		return null;
 	}
 

@@ -11,6 +11,7 @@ import prop.core.patterns.cor.Middleware;
 import prop.engine.PatchMessage;
 import prop.engine.PropOperation;
 import prop.engine.PropRegistry;
+import prop.engine.TriggeredPropOperation;
 import prop.engine.processors.PropProcessor;
 
 @Service
@@ -36,7 +37,7 @@ public class MapEffectiveOperationsStep implements Middleware<PatchMessage> {
 		Enumeration<PropProcessor> processors = registry.getProcessors();
 		while (processors.hasMoreElements()) {
 			PropProcessor processor = processors.nextElement();
-			List<PropOperation> moreOperations = processor.map(op);
+			List<TriggeredPropOperation> moreOperations = processor.map(op);
 			if (moreOperations != null && moreOperations.size() != 0) {
 				for (PropOperation _op : moreOperations) {
 					mapEffectiveOperations(_op, effectiveOperations);
