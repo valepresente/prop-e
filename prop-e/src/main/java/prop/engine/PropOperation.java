@@ -11,4 +11,9 @@ public class PropOperation {
 		return type;
 	}
 
+	public boolean isLike(PropOperation op) {
+		// TODO: use params hash to compare
+		return getType().equals(op.getType());
+	}
+
 }

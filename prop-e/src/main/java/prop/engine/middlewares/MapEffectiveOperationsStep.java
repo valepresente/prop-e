@@ -33,6 +33,10 @@ public class MapEffectiveOperationsStep implements Middleware<PatchMessage> {
 
 	private void mapEffectiveOperations(PropOperation op,
 			List<PropOperation> effectiveOperations) {
+		if ((op instanceof TriggeredPropOperation)
+				&& isOperationPresent(op, effectiveOperations)) {
+			return;
+		}
 		effectiveOperations.add(op);
 		Enumeration<PropProcessor> processors = registry.getProcessors();
 		while (processors.hasMoreElements()) {
@@ -44,6 +48,14 @@ public class MapEffectiveOperationsStep implements Middleware<PatchMessage> {
 				}
 			}
 		}
+	}
+
+	private boolean isOperationPresent(PropOperation op,
+			List<PropOperation> operations) {
+		for (PropOperation _op : operations) {
+			if (_op.isLike(op)) return true;
+		}
+		return false;
 	}
 
 }
