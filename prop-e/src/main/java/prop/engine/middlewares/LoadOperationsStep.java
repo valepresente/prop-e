@@ -28,9 +28,8 @@ public class LoadOperationsStep implements Middleware<PatchMessage> {
 	public void call(Chain<PatchMessage> chain) throws CORException {
 		PatchMessage message = chain.getRequestObject();
 		validateStructure(message);
-		if (loadAllOperations(message)) {
-			chain.next();
-		}
+		loadAllOperations(message);
+		chain.next();
 	}
 
 	private void validateStructure(PatchMessage message) throws CORException {
@@ -47,11 +46,11 @@ public class LoadOperationsStep implements Middleware<PatchMessage> {
 		}
 	}
 
-	private boolean loadAllOperations(PatchMessage message) {
+	private void loadAllOperations(PatchMessage message) throws CORException {
 		List<PropOperation> operations = message.getRequest().getOperations();
 		ArrayNode list = (ArrayNode) message.getRawMessage().get("operations");
 		PropOperation op;
-		boolean result = true;
+		boolean errorsFound = false;
 		for (int n = 0, len = list.size(); n < len; n++) {
 			JsonNode jsonOp = list.get(n);
 			ObjectNode jsonErr = message.getResponse().newEntityError();
@@ -59,10 +58,12 @@ public class LoadOperationsStep implements Middleware<PatchMessage> {
 					(op = buildOperation(jsonOp, jsonErr)) != null) {
 				operations.add(op);
 			} else {
-				result = false;
+				errorsFound = true;
 			}
 		}
-		return result;
+		if (errorsFound) {
+			message.getResponse().throwError("invalid");
+		}
 	}
 
 	private boolean isOperationStructure(JsonNode op, ObjectNode jsonErr) {
@@ -71,17 +72,26 @@ public class LoadOperationsStep implements Middleware<PatchMessage> {
 			return false;
 		}
 		JsonNode node;
+		boolean isOk = true;
 		node = op.get("operationType");
-		if (node == null || !node.isTextual() || node.textValue().length() == 0) {
-			jsonErr.put("message", "invalid operationType");
-			return false;
+		if (node == null || node.isNull()) {
+			jsonErr.with("attrs").put("operationType", "required");
+			isOk = false;
+		}
+		else if (!node.isTextual() || node.textValue().length() == 0) {
+			jsonErr.with("attrs").put("operationType", "invalid");
+			isOk = false;
 		}
 		node = op.get("params");
-		if (node == null || !node.isObject() || node.size() == 0) {
-			jsonErr.put("message", "invalid params");
-			return false;
+		if (node == null || node.isNull()) {
+			jsonErr.with("attrs").put("params", "required");
+			isOk = false;
 		}
-		return true;
+		else if (!node.isObject() || node.size() == 0) {
+			jsonErr.with("attrs").put("params", "invalid");
+			isOk = false;
+		}
+		return isOk;
 	}
 
 	private PropOperation buildOperation(JsonNode jsonOp, ObjectNode jsonErr) {

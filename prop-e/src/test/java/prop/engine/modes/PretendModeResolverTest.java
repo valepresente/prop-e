@@ -76,4 +76,48 @@ public class PretendModeResolverTest extends AbstractTestCase {
 		}
 	}
 
+	@Test
+	public void testInvalidOperation() throws Exception {
+		JsonNode emptyOrderData = new ObjectMapper()
+				.readTree("{\"operations\":[{}]}");
+		PatchMessage message = new PatchMessage(emptyOrderData);
+		try {
+			pretendResolver.process(message);
+			assertTrue("Not reachable code", false);
+		} catch (CORException e) {
+			JsonAssert.with(message.getResponse().getErrors().toString())
+					.assertNotNull("$.message")
+					.assertEquals("$.message", "invalid")
+					.assertNotNull("$.attrs")
+					.assertNotNull("$.attrs[0]")
+					.assertNotNull("$.attrs[0].attrs")
+					.assertNotNull("$.attrs[0].attrs.operationType")
+					.assertEquals("$.attrs[0].attrs.operationType", "required")
+					.assertNotNull("$.attrs[0].attrs.params")
+					.assertEquals("$.attrs[0].attrs.params", "required");
+		}
+	}
+
+	@Test
+	public void testInvalidOperationProperties() throws Exception {
+		JsonNode emptyOrderData = new ObjectMapper()
+				.readTree("{\"operations\":[{\"operationType\": \"\", \"params\":{}}]}");
+		PatchMessage message = new PatchMessage(emptyOrderData);
+		try {
+			pretendResolver.process(message);
+			assertTrue("Not reachable code", false);
+		} catch (CORException e) {
+			JsonAssert.with(message.getResponse().getErrors().toString())
+					.assertNotNull("$.message")
+					.assertEquals("$.message", "invalid")
+					.assertNotNull("$.attrs")
+					.assertNotNull("$.attrs[0]")
+					.assertNotNull("$.attrs[0].attrs")
+					.assertNotNull("$.attrs[0].attrs.operationType")
+					.assertEquals("$.attrs[0].attrs.operationType", "invalid")
+					.assertNotNull("$.attrs[0].attrs.params")
+					.assertEquals("$.attrs[0].attrs.params", "invalid");
+		}
+	}
+
 }
