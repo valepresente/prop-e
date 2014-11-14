@@ -87,8 +87,12 @@ public class LoadOperationsStep implements Middleware<PatchMessage> {
 			jsonErr.with("attrs").put("params", "required");
 			isOk = false;
 		}
-		else if (!node.isObject() || node.size() == 0) {
+		else if (!node.isObject()) {
 			jsonErr.with("attrs").put("params", "invalid");
+			isOk = false;
+		}
+		else if (node.size() == 0) {
+			jsonErr.with("attrs").put("params", "empty");
 			isOk = false;
 		}
 		return isOk;
@@ -101,11 +105,11 @@ public class LoadOperationsStep implements Middleware<PatchMessage> {
 		while (processors.hasMoreElements()) {
 			PropProcessor processor = processors.nextElement();
 			if (operationType.equals(processor.getOperationType())) {
-				op = processor.buildOperation((ObjectNode) jsonOp);
-				if (op != null) return op;
+				op = processor.buildOperation((ObjectNode) jsonOp, jsonErr);
+				return op;
 			}
 		}
-		jsonErr.put("message", "unknown operationType");
+		jsonErr.with("attrs").put("operationType", "unknown");
 		return null;
 	}
 

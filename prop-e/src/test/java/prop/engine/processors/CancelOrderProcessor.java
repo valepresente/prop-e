@@ -30,7 +30,7 @@ public class CancelOrderProcessor implements PropProcessor {
 	}
 
 	@Override
-	public PropOperation buildOperation(ObjectNode operation) {
+	public PropOperation buildOperation(ObjectNode operation, ObjectNode errors) {
 		PropOperation op = new PropOperation();
 		op.setType(getOperationType());
 		// TODO: load operation params
