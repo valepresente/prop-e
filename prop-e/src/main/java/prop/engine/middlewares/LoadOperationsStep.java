@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import prop.core.patterns.cor.CORException;
 import prop.core.patterns.cor.Chain;
 import prop.core.patterns.cor.Middleware;
 import prop.engine.PatchMessage;
@@ -24,36 +25,33 @@ public class LoadOperationsStep implements Middleware<PatchMessage> {
 	private PropRegistry registry;
 
 	@Override
-	public void call(Chain<PatchMessage> chain) {
+	public void call(Chain<PatchMessage> chain) throws CORException {
 		PatchMessage message = chain.getRequestObject();
-		if (hasValidNode(message) && loadAllOperations(message)) {
+		validateStructure(message);
+		if (loadAllOperations(message)) {
 			chain.next();
 		}
 	}
 
-	private boolean hasValidNode(PatchMessage message) {
+	private void validateStructure(PatchMessage message) throws CORException {
 		JsonNode json = message.getRawMessage();
 		if (!json.hasNonNull("operations")) {
-			// TODO: set the response with error
-			return false;
+			message.getResponse().throwError("Missing operations");
 		}
 		JsonNode node = json.get("operations");
 		if (!node.isArray()) {
-			// TODO: set the response with error
-			return false;
+			message.getResponse().throwError("Invalid operations type");
 		}
-		return true;
 	}
 
 	private boolean loadAllOperations(PatchMessage message) {
 		List<PropOperation> operations = message.getRequest().getOperations();
 		ArrayNode list = (ArrayNode) message.getRawMessage().get("operations");
-		message.getEntityErrors().removeAll();
 		PropOperation op;
 		boolean result = true;
 		for (int n = 0, len = list.size(); n < len; n++) {
 			JsonNode jsonOp = list.get(n);
-			ObjectNode jsonErr = message.getEntityErrors().addObject();
+			ObjectNode jsonErr = message.getResponse().newEntityError();
 			if (isOperationStructure(jsonOp, jsonErr) &&
 					(op = buildOperation(jsonOp, jsonErr)) != null) {
 				operations.add(op);

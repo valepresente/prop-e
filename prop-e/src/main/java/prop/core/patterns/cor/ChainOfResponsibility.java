@@ -17,7 +17,7 @@ abstract public class ChainOfResponsibility<RequestObject> {
 		}
 	}
 
-	public void process(RequestObject request) {
+	public void process(RequestObject request) throws CORException {
 		new Chain<RequestObject>(steps.iterator(), request).next();
 	}
 }

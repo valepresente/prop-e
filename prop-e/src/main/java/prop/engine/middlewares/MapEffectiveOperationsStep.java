@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import prop.core.patterns.cor.CORException;
 import prop.core.patterns.cor.Chain;
 import prop.core.patterns.cor.Middleware;
 import prop.engine.PatchMessage;
@@ -21,7 +22,7 @@ public class MapEffectiveOperationsStep implements Middleware<PatchMessage> {
 	private PropRegistry registry;
 
 	@Override
-	public void call(Chain<PatchMessage> chain) {
+	public void call(Chain<PatchMessage> chain) throws CORException {
 		PatchMessage message = chain.getRequestObject();
 		List<PropOperation> operations = message.getRequest().getOperations();
 		List<PropOperation> effectiveOperations = message.getEffectiveOperations();

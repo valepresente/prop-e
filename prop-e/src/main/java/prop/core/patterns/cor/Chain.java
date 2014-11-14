@@ -13,7 +13,7 @@ public class Chain<RequestObject> {
 		this.request = request;
 	}
 
-	public void next() {
+	public void next() throws CORException {
 		if (steps.hasNext()) {
 			steps.next().call(this);
 		}
