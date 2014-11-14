@@ -61,4 +61,19 @@ public class PretendModeResolverTest extends AbstractTestCase {
 		}
 	}
 
+	@Test
+	public void testEmptyOperations() throws Exception {
+		JsonNode emptyOrderData = new ObjectMapper()
+				.readTree("{\"operations\":[]}");
+		PatchMessage message = new PatchMessage(emptyOrderData);
+		try {
+			pretendResolver.process(message);
+			assertTrue("Not reachable code", false);
+		} catch (CORException e) {
+			JsonAssert.with(message.getResponse().getErrors().toString())
+					.assertNotNull("$.message")
+					.assertEquals("$.message", "No operations");
+		}
+	}
+
 }

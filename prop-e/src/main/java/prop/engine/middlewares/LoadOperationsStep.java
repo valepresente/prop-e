@@ -42,6 +42,9 @@ public class LoadOperationsStep implements Middleware<PatchMessage> {
 		if (!node.isArray()) {
 			message.getResponse().throwError("Invalid operations type");
 		}
+		if (node.size() == 0) {
+			message.getResponse().throwError("No operations");
+		}
 	}
 
 	private boolean loadAllOperations(PatchMessage message) {
