@@ -1,17 +1,13 @@
 package prop.engine.processors;
 
-import java.util.List;
+import prop.engine.PropOperation;
+import prop.engine.observers.PropProcessorObserver;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import prop.engine.PropOperation;
-import prop.engine.TriggeredPropOperation;
 
 public interface PropProcessor {
 
 	String getOperationType();
-
-	List<TriggeredPropOperation> map(PropOperation operation);
 
 	/**
 	 * Build an PropOperation object if no errors were found.
@@ -22,4 +18,5 @@ public interface PropProcessor {
 	 */
 	PropOperation buildOperation(ObjectNode operation, ObjectNode errors);
 
+	PropProcessorObserver getObserver();
 }

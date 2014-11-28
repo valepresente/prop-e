@@ -10,9 +10,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import prop.engine.PropOperation;
 import prop.engine.PropRegistry;
 import prop.engine.TriggeredPropOperation;
+import prop.engine.observers.PropProcessorObserver;
+import prop.engine.processors.observers.MapOtherOperationsObserver;
 
 @Service
-public class CancelOrderProcessor implements PropProcessor {
+public class CancelOrderProcessor implements PropProcessor, MapOtherOperationsObserver {
 
 	@Autowired
 	public CancelOrderProcessor(PropRegistry registry) {
@@ -35,6 +37,11 @@ public class CancelOrderProcessor implements PropProcessor {
 		op.setType(getOperationType());
 		// TODO: load operation params
 		return op;
+	}
+
+	@Override
+	public PropProcessorObserver getObserver() {
+		return this;
 	}
 
 }

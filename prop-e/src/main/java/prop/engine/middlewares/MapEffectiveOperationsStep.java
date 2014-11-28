@@ -13,7 +13,9 @@ import prop.engine.PatchMessage;
 import prop.engine.PropOperation;
 import prop.engine.PropRegistry;
 import prop.engine.TriggeredPropOperation;
+import prop.engine.observers.PropProcessorObserver;
 import prop.engine.processors.PropProcessor;
+import prop.engine.processors.observers.MapOtherOperationsObserver;
 
 @Service
 public class MapEffectiveOperationsStep implements Middleware<PatchMessage> {
@@ -42,7 +44,12 @@ public class MapEffectiveOperationsStep implements Middleware<PatchMessage> {
 		Enumeration<PropProcessor> processors = registry.getProcessors();
 		while (processors.hasMoreElements()) {
 			PropProcessor processor = processors.nextElement();
-			List<TriggeredPropOperation> moreOperations = processor.map(op);
+			PropProcessorObserver observer = processor.getObserver();
+			if (observer == null
+					|| !(observer instanceof MapOtherOperationsObserver))
+				continue;
+			MapOtherOperationsObserver mapper = (MapOtherOperationsObserver) observer;
+			List<TriggeredPropOperation> moreOperations = mapper.map(op);
 			if (moreOperations != null && moreOperations.size() != 0) {
 				for (PropOperation _op : moreOperations) {
 					mapEffectiveOperations(_op, effectiveOperations);

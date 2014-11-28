@@ -9,10 +9,10 @@ import prop.engine.middlewares.LoadOperationsStep;
 import prop.engine.middlewares.MapEffectiveOperationsStep;
 
 @Service
-public class PretendModeResolver extends ChainOfResponsibility<PatchMessage> {
+public class MapModeResolver extends ChainOfResponsibility<PatchMessage> {
 
 	@Autowired
-	public PretendModeResolver(LoadOperationsStep loadOperations,
+	public MapModeResolver(LoadOperationsStep loadOperations,
 			MapEffectiveOperationsStep mapEffectiveOperations) {
 		use(loadOperations);
 		use(mapEffectiveOperations);

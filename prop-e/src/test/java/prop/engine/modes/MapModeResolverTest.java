@@ -13,10 +13,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonassert.JsonAssert;
 
-public class PretendModeResolverTest extends AbstractTestCase {
+public class MapModeResolverTest extends AbstractTestCase {
 
 	@Autowired
-	private PretendModeResolver pretendResolver;
+	private MapModeResolver mapResolver;
 
 	@Test
 	public void testCancelOrder() throws Exception {
@@ -25,10 +25,10 @@ public class PretendModeResolverTest extends AbstractTestCase {
 						.getClass()
 						.getClassLoader()
 						.getResourceAsStream(
-								"prop/engine/fixtures/PretendModeResolver-cancelOrder.json"));
+								"prop/engine/fixtures/MapModeResolver-cancelOrder.json"));
 		PatchMessage message = new PatchMessage(cancelOrderData);
 		assertEquals(0, message.getEffectiveOperations().size());
-		pretendResolver.process(message);
+		mapResolver.process(message);
 		assertEquals(1, message.getEffectiveOperations().size());
 	}
 
@@ -37,7 +37,7 @@ public class PretendModeResolverTest extends AbstractTestCase {
 		JsonNode emptyOrderData = new ObjectMapper().readTree("{}");
 		PatchMessage message = new PatchMessage(emptyOrderData);
 		try {
-			pretendResolver.process(message);
+			mapResolver.process(message);
 			assertTrue("Not reachable code", false);
 		} catch (CORException e) {
 			JsonAssert.with(message.getResponse().getErrors().toString())
@@ -52,7 +52,7 @@ public class PretendModeResolverTest extends AbstractTestCase {
 				.readTree("{\"operations\":{}}");
 		PatchMessage message = new PatchMessage(emptyOrderData);
 		try {
-			pretendResolver.process(message);
+			mapResolver.process(message);
 			assertTrue("Not reachable code", false);
 		} catch (CORException e) {
 			JsonAssert.with(message.getResponse().getErrors().toString())
@@ -67,7 +67,7 @@ public class PretendModeResolverTest extends AbstractTestCase {
 				.readTree("{\"operations\":[]}");
 		PatchMessage message = new PatchMessage(emptyOrderData);
 		try {
-			pretendResolver.process(message);
+			mapResolver.process(message);
 			assertTrue("Not reachable code", false);
 		} catch (CORException e) {
 			JsonAssert.with(message.getResponse().getErrors().toString())
@@ -82,7 +82,7 @@ public class PretendModeResolverTest extends AbstractTestCase {
 				.readTree("{\"operations\":[{}]}");
 		PatchMessage message = new PatchMessage(emptyOrderData);
 		try {
-			pretendResolver.process(message);
+			mapResolver.process(message);
 			assertTrue("Not reachable code", false);
 		} catch (CORException e) {
 			JsonAssert.with(message.getResponse().getErrors().toString())
@@ -104,7 +104,7 @@ public class PretendModeResolverTest extends AbstractTestCase {
 				.readTree("{\"operations\":[{\"operationType\": \"\", \"params\":{}}]}");
 		PatchMessage message = new PatchMessage(emptyOrderData);
 		try {
-			pretendResolver.process(message);
+			mapResolver.process(message);
 			assertTrue("Not reachable code", false);
 		} catch (CORException e) {
 			JsonAssert.with(message.getResponse().getErrors().toString())
@@ -127,7 +127,7 @@ public class PretendModeResolverTest extends AbstractTestCase {
 				.readTree("{\"operations\":[{\"operationType\": \"strangeOperation\", \"params\":{\"id\":1}}]}");
 		PatchMessage message = new PatchMessage(emptyOrderData);
 		try {
-			pretendResolver.process(message);
+			mapResolver.process(message);
 			assertTrue("Not reachable code", false);
 		} catch (CORException e) {
 			JsonAssert.with(message.getResponse().getErrors().toString())
