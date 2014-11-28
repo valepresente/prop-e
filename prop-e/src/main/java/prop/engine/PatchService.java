@@ -3,8 +3,7 @@ package prop.engine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import prop.core.patterns.cor.CORException;
-import prop.engine.modes.MapModeResolver;
+import prop.engine.modes.PropModeResolver;
 
 @Service
 public class PatchService {
@@ -12,14 +11,7 @@ public class PatchService {
 	@Autowired
 	private PropRegistry registry;
 
-	@Autowired private MapModeResolver mapResolver;
-
-	public void pretend(PatchMessage message) throws CORException {
-		getMapResolver().process(message);
+	public PropModeResolver getResolver(String mode) {
+		return registry.getResolver(mode);
 	}
-
-	MapModeResolver getMapResolver() {
-		return mapResolver;
-	}
-
 }

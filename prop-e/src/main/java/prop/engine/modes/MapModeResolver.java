@@ -3,13 +3,12 @@ package prop.engine.modes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import prop.core.patterns.cor.ChainOfResponsibility;
-import prop.engine.PatchMessage;
+import prop.engine.PropRegistry;
 import prop.engine.middlewares.LoadOperationsStep;
 import prop.engine.middlewares.MapEffectiveOperationsStep;
 
 @Service
-public class MapModeResolver extends ChainOfResponsibility<PatchMessage> {
+public class MapModeResolver extends PropModeResolver {
 
 	@Autowired
 	public MapModeResolver(LoadOperationsStep loadOperations,
@@ -18,4 +17,13 @@ public class MapModeResolver extends ChainOfResponsibility<PatchMessage> {
 		use(mapEffectiveOperations);
 	}
 
+	@Override
+	public String getMode() {
+		return "map";
+	}
+
+	@Autowired
+	public void register(PropRegistry registry) {
+		registry.register(this);
+	}
 }
