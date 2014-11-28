@@ -12,14 +12,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import prop.core.patterns.cor.CORException;
 import prop.core.patterns.cor.Chain;
-import prop.core.patterns.cor.Middleware;
 import prop.engine.PatchMessage;
 import prop.engine.PropOperation;
 import prop.engine.PropRegistry;
+import prop.engine.modes.PropResolverMiddleware;
 import prop.engine.processors.PropProcessor;
 
 @Service
-public class LoadOperationsStep implements Middleware<PatchMessage> {
+public class LoadOperationsStep implements PropResolverMiddleware {
 
 	@Autowired
 	private PropRegistry registry;

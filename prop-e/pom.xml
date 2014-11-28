@@ -59,15 +59,15 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-    	<groupId>com.fasterxml.jackson.core</groupId>
-    	<artifactId>jackson-databind</artifactId>
-    	<version>2.4.3</version>
-    </dependency>
-    <dependency>
       <groupId>com.jayway.jsonpath</groupId>
       <artifactId>json-path-assert</artifactId>
       <version>1.1.0</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>prop</groupId>
+    	<artifactId>prop-e-core</artifactId>
+    	<version>0.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <dependencyManagement>

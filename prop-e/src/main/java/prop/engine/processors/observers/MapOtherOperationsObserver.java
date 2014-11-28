@@ -4,7 +4,7 @@ import java.util.List;
 
 import prop.engine.PropOperation;
 import prop.engine.TriggeredPropOperation;
-import prop.engine.observers.PropProcessorObserver;
+import prop.engine.processors.PropProcessorObserver;
 
 
 public interface MapOtherOperationsObserver extends PropProcessorObserver {

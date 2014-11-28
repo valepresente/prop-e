@@ -1,7 +1,6 @@
 package prop.engine.processors;
 
 import prop.engine.PropOperation;
-import prop.engine.observers.PropProcessorObserver;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

@@ -8,17 +8,17 @@ import org.springframework.stereotype.Service;
 
 import prop.core.patterns.cor.CORException;
 import prop.core.patterns.cor.Chain;
-import prop.core.patterns.cor.Middleware;
 import prop.engine.PatchMessage;
 import prop.engine.PropOperation;
 import prop.engine.PropRegistry;
 import prop.engine.TriggeredPropOperation;
-import prop.engine.observers.PropProcessorObserver;
+import prop.engine.modes.PropResolverMiddleware;
 import prop.engine.processors.PropProcessor;
+import prop.engine.processors.PropProcessorObserver;
 import prop.engine.processors.observers.MapOtherOperationsObserver;
 
 @Service
-public class MapEffectiveOperationsStep implements Middleware<PatchMessage> {
+public class MapEffectiveOperationsStep implements PropResolverMiddleware {
 
 	@Autowired
 	private PropRegistry registry;
