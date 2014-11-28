@@ -1,6 +1,8 @@
 package prop.engine;
 
-import org.junit.Assert;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,8 +18,8 @@ public class PropRegistryTest extends AbstractTestCase {
 	@Test
 	public void testRegistry() {
 		PropProcessor processor = registry.getProcessor("cancelOrder");
-		Assert.assertNotNull(processor);
-		Assert.assertTrue(processor instanceof CancelOrderProcessor);
+		assertNotNull(processor);
+		assertThat(processor, instanceOf(CancelOrderProcessor.class));
 	}
 
 }
