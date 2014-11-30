@@ -12,11 +12,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import prop.engine.PropRegistry;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Path("operations")
 public class PropController {
+
+	@Autowired
+	private PropRegistry registry;
 
 	@Context
 	private UriInfo uriInfo;
@@ -27,7 +34,12 @@ public class PropController {
 	public Response entrypoint() throws IOException {
 		InputStream in = this.getClass().getClassLoader()
 				.getResourceAsStream("jrack/api/rs/views/operations.json");
-		JsonNode entity = new ObjectMapper().readTree(in);
+		ObjectNode entity = (ObjectNode) new ObjectMapper().readTree(in);
+		for (String mode: registry.getSupportedModes()) {
+			entity.with("_links").with(mode + "_operation_schema")
+					.put("href", "/operations/schemas/" + mode)
+					.put("type", "application/schema+json");
+		}
 		ResponseBuilder response = Response.ok(entity);
 		return response.build();
 	}

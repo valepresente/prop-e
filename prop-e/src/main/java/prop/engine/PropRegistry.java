@@ -1,6 +1,7 @@
 package prop.engine;
 
 import java.util.Enumeration;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
@@ -41,4 +42,7 @@ public class PropRegistry {
 		return registry.elements();
 	}
 
+	public Set<String> getSupportedModes() {
+		return resolverRegistry.keySet();
+	}
 }

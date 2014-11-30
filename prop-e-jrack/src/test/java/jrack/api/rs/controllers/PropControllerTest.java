@@ -20,8 +20,13 @@ public class PropControllerTest extends AbstractControllerTestCase<PropControlle
 		assertEquals(200, response.getStatus());
 		assertEquals("application/json", response.getHeaders().getFirst("Content-Type"));
 
-		with((InputStream) response.getEntity()).assertEquals(
-				"$._links.self.href", "/operations");
+		with((InputStream) response.getEntity())
+				.assertEquals("$._links.self.href", "/operations")
+				.assertEquals("$._links.self.type", "application/hal+json")
+				.assertEquals("$._links.map_operation_schema.href",
+						"/operations/schemas/map")
+				.assertEquals("$._links.map_operation_schema.type",
+						"application/schema+json");
 	}
 
 }
