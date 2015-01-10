@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import prop.core.patterns.cor.CORException;
 import prop.engine.PatchMessage;
+import prop.engine.PropRegistry;
+import prop.engine.processors.CancelOrderProcessor;
 import prop.test.AbstractTestCase;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,6 +20,16 @@ public class MapModeResolverTest extends AbstractTestCase {
 	@Autowired
 	private MapModeResolver mapResolver;
 
+	@Autowired
+	private CancelOrderProcessor cancelOrderProcessor;
+
+	private PropRegistry registry() {
+		PropRegistry registry = new PropRegistry();
+		registry.register(mapResolver);
+		registry.register(cancelOrderProcessor);
+		return registry;
+	}
+
 	@Test
 	public void testCancelOrder() throws Exception {
 		JsonNode cancelOrderData = new ObjectMapper()
@@ -26,7 +38,7 @@ public class MapModeResolverTest extends AbstractTestCase {
 						.getClassLoader()
 						.getResourceAsStream(
 								"prop/engine/fixtures/MapModeResolver-cancelOrder.json"));
-		PatchMessage message = new PatchMessage(cancelOrderData);
+		PatchMessage message = new PatchMessage(registry(), cancelOrderData);
 		assertEquals(0, message.getEffectiveOperations().size());
 		mapResolver.process(message);
 		assertEquals(1, message.getEffectiveOperations().size());
@@ -35,7 +47,7 @@ public class MapModeResolverTest extends AbstractTestCase {
 	@Test
 	public void testWithEmptyJSON() throws Exception {
 		JsonNode emptyOrderData = new ObjectMapper().readTree("{}");
-		PatchMessage message = new PatchMessage(emptyOrderData);
+		PatchMessage message = new PatchMessage(registry(), emptyOrderData);
 		try {
 			mapResolver.process(message);
 			assertTrue("Not reachable code", false);
@@ -50,7 +62,7 @@ public class MapModeResolverTest extends AbstractTestCase {
 	public void testWithInvalidOperationsType() throws Exception {
 		JsonNode emptyOrderData = new ObjectMapper()
 				.readTree("{\"operations\":{}}");
-		PatchMessage message = new PatchMessage(emptyOrderData);
+		PatchMessage message = new PatchMessage(registry(), emptyOrderData);
 		try {
 			mapResolver.process(message);
 			assertTrue("Not reachable code", false);
@@ -65,7 +77,7 @@ public class MapModeResolverTest extends AbstractTestCase {
 	public void testEmptyOperations() throws Exception {
 		JsonNode emptyOrderData = new ObjectMapper()
 				.readTree("{\"operations\":[]}");
-		PatchMessage message = new PatchMessage(emptyOrderData);
+		PatchMessage message = new PatchMessage(registry(), emptyOrderData);
 		try {
 			mapResolver.process(message);
 			assertTrue("Not reachable code", false);
@@ -80,7 +92,7 @@ public class MapModeResolverTest extends AbstractTestCase {
 	public void testInvalidOperation() throws Exception {
 		JsonNode emptyOrderData = new ObjectMapper()
 				.readTree("{\"operations\":[{}]}");
-		PatchMessage message = new PatchMessage(emptyOrderData);
+		PatchMessage message = new PatchMessage(registry(), emptyOrderData);
 		try {
 			mapResolver.process(message);
 			assertTrue("Not reachable code", false);
@@ -102,7 +114,7 @@ public class MapModeResolverTest extends AbstractTestCase {
 	public void testInvalidOperationProperties() throws Exception {
 		JsonNode emptyOrderData = new ObjectMapper()
 				.readTree("{\"operations\":[{\"operationType\": \"\", \"params\":{}}]}");
-		PatchMessage message = new PatchMessage(emptyOrderData);
+		PatchMessage message = new PatchMessage(registry(), emptyOrderData);
 		try {
 			mapResolver.process(message);
 			assertTrue("Not reachable code", false);
@@ -125,7 +137,7 @@ public class MapModeResolverTest extends AbstractTestCase {
 	public void testUnknownOperation() throws Exception {
 		JsonNode emptyOrderData = new ObjectMapper()
 				.readTree("{\"operations\":[{\"operationType\": \"strangeOperation\", \"params\":{\"id\":1}}]}");
-		PatchMessage message = new PatchMessage(emptyOrderData);
+		PatchMessage message = new PatchMessage(registry(), emptyOrderData);
 		try {
 			mapResolver.process(message);
 			assertTrue("Not reachable code", false);

@@ -2,23 +2,16 @@ package prop.engine.processors;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import prop.engine.PropOperation;
-import prop.engine.PropRegistry;
 import prop.engine.TriggeredPropOperation;
 import prop.engine.processors.observers.MapOtherOperationsObserver;
 
 @Service
 public class CancelOrderProcessor implements PropProcessor, MapOtherOperationsObserver {
-
-	@Autowired
-	public CancelOrderProcessor(PropRegistry registry) {
-		registry.register(this);
-	}
 
 	@Override
 	public String getOperationType() {

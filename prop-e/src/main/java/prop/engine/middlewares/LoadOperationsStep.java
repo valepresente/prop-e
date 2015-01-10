@@ -3,7 +3,6 @@ package prop.engine.middlewares;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,9 +19,6 @@ import prop.engine.processors.PropProcessor;
 
 @Service
 public class LoadOperationsStep implements PropResolverMiddleware {
-
-	@Autowired
-	private PropRegistry registry;
 
 	@Override
 	public void call(Chain<PatchMessage> chain) throws CORException {
@@ -48,6 +44,7 @@ public class LoadOperationsStep implements PropResolverMiddleware {
 
 	private void loadAllOperations(PatchMessage message) throws CORException {
 		List<PropOperation> operations = message.getRequest().getOperations();
+		PropRegistry registry = message.getRegistry();
 		ArrayNode list = (ArrayNode) message.getRawMessage().get("operations");
 		PropOperation op;
 		boolean errorsFound = false;
@@ -55,7 +52,7 @@ public class LoadOperationsStep implements PropResolverMiddleware {
 			JsonNode jsonOp = list.get(n);
 			ObjectNode jsonErr = message.getResponse().newEntityError();
 			if (isOperationStructure(jsonOp, jsonErr) &&
-					(op = buildOperation(jsonOp, jsonErr)) != null) {
+					(op = buildOperation(registry, jsonOp, jsonErr)) != null) {
 				operations.add(op);
 			} else {
 				errorsFound = true;
@@ -98,7 +95,8 @@ public class LoadOperationsStep implements PropResolverMiddleware {
 		return isOk;
 	}
 
-	private PropOperation buildOperation(JsonNode jsonOp, ObjectNode jsonErr) {
+	private PropOperation buildOperation(PropRegistry registry,
+			JsonNode jsonOp, ObjectNode jsonErr) {
 		Enumeration<PropProcessor> processors = registry.getProcessors();
 		PropOperation op;
 		String operationType = jsonOp.get("operationType").asText();

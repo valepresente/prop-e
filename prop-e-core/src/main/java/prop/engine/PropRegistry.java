@@ -4,12 +4,9 @@ import java.util.Enumeration;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.stereotype.Service;
-
 import prop.engine.modes.PropModeResolver;
 import prop.engine.processors.PropProcessor;
 
-@Service
 public class PropRegistry {
 
 	private ConcurrentHashMap<String, PropProcessor> registry;

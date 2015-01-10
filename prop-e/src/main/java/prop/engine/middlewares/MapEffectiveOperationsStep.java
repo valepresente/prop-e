@@ -3,7 +3,6 @@ package prop.engine.middlewares;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import prop.core.patterns.cor.CORException;
@@ -20,21 +19,19 @@ import prop.engine.processors.observers.MapOtherOperationsObserver;
 @Service
 public class MapEffectiveOperationsStep implements PropResolverMiddleware {
 
-	@Autowired
-	private PropRegistry registry;
-
 	@Override
 	public void call(Chain<PatchMessage> chain) throws CORException {
 		PatchMessage message = chain.getRequestObject();
+		PropRegistry registry = message.getRegistry();
 		List<PropOperation> operations = message.getRequest().getOperations();
 		List<PropOperation> effectiveOperations = message.getEffectiveOperations();
 		for (PropOperation op : operations) {
-			mapEffectiveOperations(op, effectiveOperations);
+			mapEffectiveOperations(registry, op, effectiveOperations);
 		}
 		chain.next();
 	}
 
-	private void mapEffectiveOperations(PropOperation op,
+	private void mapEffectiveOperations(PropRegistry registry, PropOperation op,
 			List<PropOperation> effectiveOperations) {
 		if ((op instanceof TriggeredPropOperation)
 				&& isOperationPresent(op, effectiveOperations)) {
@@ -52,7 +49,7 @@ public class MapEffectiveOperationsStep implements PropResolverMiddleware {
 			List<TriggeredPropOperation> moreOperations = mapper.map(op);
 			if (moreOperations != null && moreOperations.size() != 0) {
 				for (PropOperation _op : moreOperations) {
-					mapEffectiveOperations(_op, effectiveOperations);
+					mapEffectiveOperations(registry, _op, effectiveOperations);
 				}
 			}
 		}
