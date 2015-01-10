@@ -6,11 +6,15 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import jrack.test.AbstractControllerTestCase;
 
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PropControllerTest extends AbstractControllerTestCase<PropController> {
 
@@ -29,4 +33,15 @@ public class PropControllerTest extends AbstractControllerTestCase<PropControlle
 						"application/schema+json");
 	}
 
+	@Test
+	public void testMapOperations() throws IOException {
+		JsonNode json = new ObjectMapper()
+		.readTree(this
+				.getClass()
+				.getClassLoader()
+				.getResourceAsStream(
+						"prop/engine/fixtures/MapModeResolver-cancelOrder.json"));
+		Entity<JsonNode> entity = Entity.json(json);
+		target("/operations").request().build("PATCH", entity).invoke();
+	}
 }

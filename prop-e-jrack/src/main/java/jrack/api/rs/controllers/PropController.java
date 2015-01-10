@@ -14,7 +14,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import prop.engine.PropRegistry;
+import prop.engine.OperationsRegistry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class PropController {
 
 	@Autowired
-	private PropRegistry registry;
+	private OperationsRegistry registry;
 
 	@Context
 	private UriInfo uriInfo;
