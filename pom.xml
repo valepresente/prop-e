@@ -17,9 +17,7 @@
   <modules>
     <module>prop-e-core</module>
     <module>prop-e</module>
-    <!--  - ->
     <module>prop-e-jrack</module>
-    <!- -  -->
   </modules>
 
 </project>

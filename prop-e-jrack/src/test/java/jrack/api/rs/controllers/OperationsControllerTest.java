@@ -16,7 +16,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class PropControllerTest extends AbstractControllerTestCase<PropController> {
+public class OperationsControllerTest extends AbstractControllerTestCase<OperationsController> {
 
 	@Test
 	public void testEntrypoint() throws IOException {
