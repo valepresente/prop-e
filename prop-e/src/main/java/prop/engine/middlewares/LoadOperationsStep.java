@@ -30,10 +30,11 @@ public class LoadOperationsStep implements PropResolverMiddleware {
 
 	private void validateStructure(PatchMessage message) throws CORException {
 		JsonNode json = message.getRawMessage();
-		if (!json.hasNonNull("operations")) {
+		String resourceType = message.getResourceType();
+		if (!json.hasNonNull(resourceType)) {
 			message.getResponse().throwError("Missing operations");
 		}
-		JsonNode node = json.get("operations");
+		JsonNode node = json.get(resourceType);
 		if (!node.isArray()) {
 			message.getResponse().throwError("Invalid operations type");
 		}
@@ -45,7 +46,8 @@ public class LoadOperationsStep implements PropResolverMiddleware {
 	private void loadAllOperations(PatchMessage message) throws CORException {
 		List<PropOperation> operations = message.getRequest().getOperations();
 		PropRegistry registry = message.getRegistry();
-		ArrayNode list = (ArrayNode) message.getRawMessage().get("operations");
+		String resourceType = message.getResourceType();
+		ArrayNode list = (ArrayNode) message.getRawMessage().get(resourceType);
 		PropOperation op;
 		boolean errorsFound = false;
 		for (int n = 0, len = list.size(); n < len; n++) {
