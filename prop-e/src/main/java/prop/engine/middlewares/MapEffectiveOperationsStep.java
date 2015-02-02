@@ -22,21 +22,21 @@ public class MapEffectiveOperationsStep implements PropResolverMiddleware {
 	@Override
 	public void call(Chain<PatchMessage> chain) throws CORException {
 		PatchMessage message = chain.getRequestObject();
-		PropRegistry registry = message.getRegistry();
 		List<PropOperation> operations = message.getRequest().getOperations();
 		List<PropOperation> effectiveOperations = message.getEffectiveOperations();
 		for (PropOperation op : operations) {
-			mapEffectiveOperations(registry, op, effectiveOperations);
+			mapEffectiveOperations(message, op, effectiveOperations);
 		}
 		chain.next();
 	}
 
-	private void mapEffectiveOperations(PropRegistry registry, PropOperation op,
+	private void mapEffectiveOperations(PatchMessage message, PropOperation op,
 			List<PropOperation> effectiveOperations) {
 		if ((op instanceof TriggeredPropOperation)
 				&& isOperationPresent(op, effectiveOperations)) {
 			return;
 		}
+		PropRegistry registry = message.getRegistry();
 		effectiveOperations.add(op);
 		Enumeration<PropProcessor> processors = registry.getProcessors();
 		while (processors.hasMoreElements()) {
@@ -46,10 +46,10 @@ public class MapEffectiveOperationsStep implements PropResolverMiddleware {
 					|| !(observer instanceof MapOtherOperationsObserver))
 				continue;
 			MapOtherOperationsObserver mapper = (MapOtherOperationsObserver) observer;
-			List<TriggeredPropOperation> moreOperations = mapper.map(op);
+			List<TriggeredPropOperation> moreOperations = mapper.map(message, op);
 			if (moreOperations != null && moreOperations.size() != 0) {
 				for (PropOperation _op : moreOperations) {
-					mapEffectiveOperations(registry, _op, effectiveOperations);
+					mapEffectiveOperations(message, _op, effectiveOperations);
 				}
 			}
 		}

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import prop.engine.PatchMessage;
 import prop.engine.PropOperation;
 import prop.engine.TriggeredPropOperation;
 import prop.engine.processors.observers.MapOtherOperationsObserver;
@@ -19,7 +20,7 @@ public class CancelOrderProcessor implements PropProcessor, MapOtherOperationsOb
 	}
 
 	@Override
-	public List<TriggeredPropOperation> map(PropOperation operation) {
+	public List<TriggeredPropOperation> map(PatchMessage message, PropOperation operation) {
 		return null;
 	}
 
