@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class PatchMessage {
 
@@ -40,6 +43,18 @@ public class PatchMessage {
 
 	public JsonNode getRawMessage() {
 		return rawMessage;
+	}
+
+	public JsonNode getEffectiveMessage() {
+		ObjectNode json = new ObjectMapper().createObjectNode();
+		if (!json.has("_links")) {
+			json.put("_links", rawMessage.get("_links"));
+		}
+		ArrayNode operations = json.withArray(resourceType);
+		for (PropOperation op : effectiveOperations) {
+			operations.add(op.getJson());
+		}
+		return json;
 	}
 
 	public PatchResponse getResponse() {
