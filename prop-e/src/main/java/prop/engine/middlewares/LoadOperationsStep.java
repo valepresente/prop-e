@@ -1,13 +1,9 @@
 package prop.engine.middlewares;
 
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import prop.core.patterns.cor.CORException;
 import prop.core.patterns.cor.Chain;
@@ -16,6 +12,10 @@ import prop.engine.PropOperation;
 import prop.engine.PropRegistry;
 import prop.engine.modes.PropResolverMiddleware;
 import prop.engine.processors.PropProcessor;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Service
 public class LoadOperationsStep implements PropResolverMiddleware {
@@ -99,11 +99,11 @@ public class LoadOperationsStep implements PropResolverMiddleware {
 
 	private PropOperation buildOperation(PropRegistry registry,
 			JsonNode jsonOp, ObjectNode jsonErr) {
-		Enumeration<PropProcessor> processors = registry.getProcessors();
+		Iterator<String> processors = registry.getProcessorTypes();
 		PropOperation op;
 		String operationType = jsonOp.get("operationType").asText();
-		while (processors.hasMoreElements()) {
-			PropProcessor processor = processors.nextElement();
+		while (processors.hasNext()) {
+			PropProcessor processor = registry.getProcessor(processors.next());
 			if (operationType.equals(processor.getOperationType())) {
 				op = processor.buildOperation((ObjectNode) jsonOp, jsonErr);
 				return op;

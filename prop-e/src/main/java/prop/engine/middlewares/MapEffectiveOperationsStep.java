@@ -1,6 +1,6 @@
 package prop.engine.middlewares;
 
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -38,9 +38,9 @@ public class MapEffectiveOperationsStep implements PropResolverMiddleware {
 		}
 		PropRegistry registry = message.getRegistry();
 		effectiveOperations.add(op);
-		Enumeration<PropProcessor> processors = registry.getProcessors();
-		while (processors.hasMoreElements()) {
-			PropProcessor processor = processors.nextElement();
+		Iterator<String> processors = registry.getProcessorTypes();
+		while (processors.hasNext()) {
+			PropProcessor processor = registry.getProcessor(processors.next());
 			PropProcessorObserver observer = processor.getObserver();
 			if (observer == null
 					|| !(observer instanceof MapOtherOperationsObserver))
