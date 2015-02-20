@@ -1,7 +1,9 @@
 package prop.engine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -13,6 +15,7 @@ public class PatchMessage {
 	private List<PropOperation> effectiveOperations = new ArrayList<>();
 	private JsonNode rawMessage;
 	private String resourceType;
+	private Map<String, Object> context;
 
 	public PatchMessage(PropRegistry registry, JsonNode rawMessage) {
 		this.registry = registry;
@@ -24,6 +27,7 @@ public class PatchMessage {
 			resourceType = "operations";
 		}
 		this.resourceType = resourceType;
+		context = new HashMap<>();
 	}
 
 	public PropRegistry getRegistry() {
@@ -48,6 +52,14 @@ public class PatchMessage {
 
 	public String getResourceType() {
 		return resourceType;
+	}
+
+	public Object get(String contextObjectName) {
+		return context.get(contextObjectName);
+	}
+
+	public void put(String contextObjectName, Object value) {
+		context.put(contextObjectName, value);
 	}
 
 }
