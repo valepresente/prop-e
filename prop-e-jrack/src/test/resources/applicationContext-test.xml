@@ -9,5 +9,5 @@
 
   <import resource="classpath:jrack/api/rs/applicationContext.xml" />
 
-  <bean id="operationsController" class="jrack.api.rs.controllers.OperationsController" scope="prototype" />
+  <bean id="operationsController" class="jrack.api.rs.controllers.OrderController" scope="prototype" />
 </beans>

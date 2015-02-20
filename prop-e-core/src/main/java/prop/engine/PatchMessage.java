@@ -47,8 +47,11 @@ public class PatchMessage {
 
 	public JsonNode getEffectiveMessage() {
 		ObjectNode json = new ObjectMapper().createObjectNode();
-		if (!json.has("_links")) {
+		if (rawMessage.hasNonNull("_links")) {
 			json.put("_links", rawMessage.get("_links"));
+		}
+		if (rawMessage.hasNonNull("resourceType")) {
+			json.put("resourceType", rawMessage.get("resourceType"));
 		}
 		ArrayNode operations = json.withArray(resourceType);
 		for (PropOperation op : effectiveOperations) {
