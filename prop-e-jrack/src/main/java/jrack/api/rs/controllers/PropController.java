@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import jrack.api.rs.PATCH;
 import prop.core.patterns.cor.CORException;
 import prop.engine.PatchMessage;
 import prop.engine.PropRegistry;
@@ -60,4 +61,17 @@ abstract public class PropController<R extends PropRegistry> {
 		return response.build();
 	}
 
+	@PATCH
+	@Path("{id}/to/{op:[\\w]+}")
+	@Produces("application/hal+json; charset=UTF-8")
+	public Response execute(@PathParam("id") String id,
+			@PathParam("op") String operation, String body) {
+		ResponseBuilder response = Response.ok();
+		if (body == null || body.length() == 0) {
+			response.status(Status.BAD_REQUEST);
+			return response.build();
+		}
+		// TODO: implements the patch
+		return response.build();
+	}
 }
