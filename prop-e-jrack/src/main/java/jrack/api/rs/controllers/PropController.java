@@ -1,5 +1,7 @@
 package jrack.api.rs.controllers;
 
+import java.io.IOException;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -16,6 +18,7 @@ import prop.engine.PatchMessage;
 import prop.engine.PropRegistry;
 import prop.engine.modes.PropModeResolver;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -67,11 +70,42 @@ abstract public class PropController<R extends PropRegistry> {
 	public Response execute(@PathParam("id") String id,
 			@PathParam("op") String operation, String body) {
 		ResponseBuilder response = Response.ok();
+		ObjectMapper jsonMapper = new ObjectMapper();
+		ObjectNode entity;
 		if (body == null || body.length() == 0) {
-			response.status(Status.BAD_REQUEST);
+			entity = jsonMapper.createObjectNode();
+			entity.put("resourceType", "error").with("error")
+					.put("message", "Empty body");
+			response.entity(entity).status(Status.BAD_REQUEST);
 			return response.build();
 		}
-		// TODO: implements the patch
+		PatchMessage request = null;
+		try {
+			PropModeResolver executor = getRegistry().getResolver("execute");
+			if (executor == null) {
+				entity = jsonMapper.createObjectNode();
+				entity.put("resourceType", "error").with("error")
+						.put("message", "No executor resolver");
+				response.entity(entity).status(Status.NOT_IMPLEMENTED);
+				return response.build();
+			}
+			entity = (ObjectNode) jsonMapper.readTree(body);
+			request = new PatchMessage(getRegistry(), entity);
+			executor.process(request);
+		} catch (JsonProcessingException e) {
+			entity = jsonMapper.createObjectNode();
+			entity.put("resourceType", "error").with("error")
+					.put("message", e.getOriginalMessage());
+			response.entity(entity).status(Status.BAD_REQUEST);
+		} catch (IOException e) {
+			entity = jsonMapper.createObjectNode();
+			entity.put("resourceType", "error").with("error")
+					.put("message", e.getMessage());
+			response.entity(entity).status(Status.INTERNAL_SERVER_ERROR);
+		} catch (CORException e) {
+			entity = request.getResponse().getErrors();
+			response.entity(entity).status(422);
+		}
 		return response.build();
 	}
 }

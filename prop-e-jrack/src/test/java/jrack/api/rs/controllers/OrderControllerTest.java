@@ -52,5 +52,22 @@ public class OrderControllerTest extends AbstractControllerTestCase<OrderControl
 		Response response = target("/order/1/to/cancel").request().method(
 				"PATCH");
 		assertEquals(400, response.getStatus());
+		with((InputStream) response.getEntity()).assertEquals("resourceType",
+				"error").assertEquals("error.message", "Empty body");
+	}
+
+	@Test
+	public void testExecuteOperationsWithBadRequestedJson() throws IOException {
+		String json = "{\n\t\"resourceType\":\"order_operations\",}";
+		Entity<String> entity = Entity.entity(json,
+				MediaType.APPLICATION_JSON);
+		Response response = target("/order/1/to/cancel").request().method(
+				"PATCH", entity);
+		assertEquals(400, response.getStatus());
+		with((InputStream) response.getEntity())
+				.assertEquals("resourceType", "error")
+				.assertEquals(
+						"error.message",
+						"Unexpected character ('}' (code 125)): was expecting double-quote to start field name");
 	}
 }
