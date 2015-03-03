@@ -38,7 +38,9 @@ public class ExecuteOperationsStep implements PropResolverMiddleware {
 			} else {
 				ExecuteOperationsObserver executor = (ExecuteOperationsObserver) observer;
 				result = executor.execute(message, operation);
-				if (result == null || result == ResultStatus.ABORTED) {
+				if (result == null) {
+					result = ResultStatus.UNKNOWN;
+				} else if (result == ResultStatus.ABORTED) {
 					message.getResponse().throwError(
 							String.format("error status %s (execution %d)",
 									result, op));

@@ -6,7 +6,8 @@ public enum ResultStatus {
 	PARTIAL_SUCCESS,	// was performed with what had to be done
 	WAS_GONE,			// had already been done
 
-	UNRESOLVED,			// resolution unknown
+	UNRESOLVED,			// resolution not observed
+	UNKNOWN,			// executed, but no response was given
 
 	ABORTED,			// crashed
 	FAILED,				// can't be done

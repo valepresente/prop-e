@@ -36,7 +36,7 @@ abstract public class PropController<R extends PropRegistry> {
 	private UriInfo uriInfo;
 
 	@GET
-	@Path("{id}/to/{op:[\\w]+}")
+	@Path("{id}/operations/to/{op:[\\w]+}")
 	@Produces("application/hal+json; charset=UTF-8")
 	public Response map(@PathParam("id") String id,
 			@PathParam("op") String operation) {
@@ -46,7 +46,7 @@ abstract public class PropController<R extends PropRegistry> {
 		try {
 			JsonNode knownOperation = buildOperation(operation, id);
 			if (knownOperation == null) {
-				response.status(Status.NOT_IMPLEMENTED);
+				response.status(Status.NOT_FOUND);
 				return response.build();
 			}
 			PropModeResolver mapper = getRegistry().getResolver("map");
@@ -65,7 +65,7 @@ abstract public class PropController<R extends PropRegistry> {
 	}
 
 	@PATCH
-	@Path("{id}/to/{op:[\\w]+}")
+	@Path("{id}/operations/to/{op:[\\w]+}")
 	@Produces("application/hal+json; charset=UTF-8")
 	public Response execute(@PathParam("id") String id,
 			@PathParam("op") String operation, String body) {
@@ -92,6 +92,7 @@ abstract public class PropController<R extends PropRegistry> {
 			entity = (ObjectNode) jsonMapper.readTree(body);
 			request = new PatchMessage(getRegistry(), entity);
 			executor.process(request);
+			response.entity(entity);
 		} catch (JsonProcessingException e) {
 			entity = jsonMapper.createObjectNode();
 			entity.put("resourceType", "error").with("error")
