@@ -41,6 +41,10 @@ public class PropOperation {
 		return operation.with("data");
 	}
 
+	public ObjectNode getRealized() {
+		return operation.with("realized");
+	}
+
 	public JsonNode getJson() {
 		return operation;
 	}
