@@ -26,7 +26,7 @@ public class PropOperation {
 	}
 
 	public boolean isLike(PropOperation op) {
-		return getType().equals(op.getType()) && operation.equals(op.operation);
+		return getType().equals(op.getType()) && getParams().equals(op.getParams());
 	}
 
 	public JsonNode getParam(String fieldName) {
