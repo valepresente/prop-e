@@ -1,6 +1,9 @@
 package prop.engine;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.core.Cookie;
 
 import org.springframework.stereotype.Service;
 
@@ -49,6 +52,18 @@ public class CancelOrderProcessor implements PropProcessor,
 		} else if (op.asText().equals("2")) {
 			operation.getRealized().put("cancelation", "not_possible");
 			return ResultStatus.FAILED;
+		} else if (op.asText().equals("3")) {
+			@SuppressWarnings("unchecked")
+			Map<String, Cookie> cookies = (Map<String, Cookie>) message.get("Cookies");
+			if (cookies == null
+					|| cookies.get("credentials") == null
+					|| !"user:password".equals(cookies.get("credentials")
+							.getValue())) {
+				operation.getRealized().put("error_message", "insuficient_privileges");
+				return ResultStatus.FAILED;
+			} else {
+				operation.getRealized().put("cancelation", "ok");
+			}
 		}
 		return ResultStatus.SUCCESS;
 	}

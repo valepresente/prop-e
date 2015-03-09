@@ -1,12 +1,15 @@
 package jrack.api.rs.controllers;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
@@ -34,6 +37,9 @@ abstract public class PropController<R extends PropRegistry> {
 
 	@Context
 	private UriInfo uriInfo;
+
+	@Context
+	private HttpHeaders headers;
 
 	@GET
 	@Path("{id}/operations/to/{op:[\\w]+}")
@@ -91,6 +97,10 @@ abstract public class PropController<R extends PropRegistry> {
 			}
 			entity = (ObjectNode) jsonMapper.readTree(body);
 			request = new PatchMessage(getRegistry(), entity);
+			Map<String, Cookie> cookies = headers.getCookies();
+			if(!cookies.isEmpty()) {
+				request.put("Cookies", cookies);
+			}
 			executor.process(request);
 			response.entity(entity);
 		} catch (JsonProcessingException e) {

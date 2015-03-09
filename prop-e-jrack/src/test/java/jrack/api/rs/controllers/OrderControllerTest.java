@@ -95,6 +95,46 @@ public class OrderControllerTest extends AbstractControllerTestCase<OrderControl
 	}
 
 	@Test
+	public void testExecuteOperationsWithoutCredentials() throws IOException {
+		ObjectNode json = new ObjectMapper().createObjectNode();
+		json.put("resourceType", "order_operations");
+		ObjectNode op = json.withArray("order_operations").addObject();
+		op.put("operationType", "cancelOrder")
+			.with("params").put("orderId", "3");
+		Entity<ObjectNode> entity = Entity.entity(json,
+				MediaType.APPLICATION_JSON);
+		Response response = target("/order/3/operations/to/cancel").request().method(
+				"PATCH", entity);
+		assertEquals(200, response.getStatus());
+		with((InputStream) response.getEntity())
+			.assertEquals("resourceType", "order_operations")
+			.assertEquals("order_operations[0].operationType", "cancelOrder")
+			.assertEquals("order_operations[0].status", "FAILED")
+			.assertEquals("order_operations[0].realized.error_message", "insuficient_privileges")
+		;
+	}
+
+	@Test
+	public void testExecuteOperationsWithCredentials() throws IOException {
+		ObjectNode json = new ObjectMapper().createObjectNode();
+		json.put("resourceType", "order_operations");
+		ObjectNode op = json.withArray("order_operations").addObject();
+		op.put("operationType", "cancelOrder")
+			.with("params").put("orderId", "3");
+		Entity<ObjectNode> entity = Entity.entity(json,
+				MediaType.APPLICATION_JSON);
+		Response response = target("/order/3/operations/to/cancel").request()
+				.cookie("credentials", "user:password").method("PATCH", entity);
+		assertEquals(200, response.getStatus());
+		with((InputStream) response.getEntity())
+			.assertEquals("resourceType", "order_operations")
+			.assertEquals("order_operations[0].operationType", "cancelOrder")
+			.assertEquals("order_operations[0].status", "SUCCESS")
+			.assertEquals("order_operations[0].realized.cancelation", "ok")
+		;
+	}
+
+	@Test
 	public void testExecuteOperationsWithEmptyBody() throws IOException {
 		Response response = target("/order/1/operations/to/cancel").request()
 				.method("PATCH");
