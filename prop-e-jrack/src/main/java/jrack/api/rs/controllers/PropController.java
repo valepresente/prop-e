@@ -1,6 +1,7 @@
 package jrack.api.rs.controllers;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.GET;
@@ -99,7 +100,11 @@ abstract public class PropController<R extends PropRegistry> {
 			request = new PatchMessage(getRegistry(), entity);
 			Map<String, Cookie> cookies = headers.getCookies();
 			if(!cookies.isEmpty()) {
-				request.put("Cookies", cookies);
+				Map<String, String> _cookies = new HashMap<>(cookies.size());
+				for (Cookie cookie: cookies.values()) {
+					_cookies.put(cookie.getName(), cookie.getValue());
+				}
+				request.put("Cookies", _cookies);
 			}
 			executor.process(request);
 			response.entity(entity);

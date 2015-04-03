@@ -3,18 +3,16 @@ package prop.engine;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.Cookie;
-
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import prop.engine.processors.PropProcessor;
 import prop.engine.processors.PropProcessorObserver;
 import prop.engine.processors.ResultStatus;
 import prop.engine.processors.observers.ExecuteOperationsObserver;
 import prop.engine.processors.observers.MapOtherOperationsObserver;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Service
 public class CancelOrderProcessor implements PropProcessor,
@@ -54,11 +52,10 @@ public class CancelOrderProcessor implements PropProcessor,
 			return ResultStatus.FAILED;
 		} else if (op.asText().equals("3")) {
 			@SuppressWarnings("unchecked")
-			Map<String, Cookie> cookies = (Map<String, Cookie>) message.get("Cookies");
+			Map<String, String> cookies = (Map<String, String>) message.get("Cookies");
 			if (cookies == null
 					|| cookies.get("credentials") == null
-					|| !"user:password".equals(cookies.get("credentials")
-							.getValue())) {
+					|| !"user:password".equals(cookies.get("credentials"))) {
 				operation.getRealized().put("error_message", "insuficient_privileges");
 				return ResultStatus.FAILED;
 			} else {
