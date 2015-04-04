@@ -10,9 +10,11 @@ import prop.engine.PatchMessage;
 import prop.engine.PropOperation;
 import prop.engine.TriggeredPropOperation;
 import prop.engine.processors.observers.MapOtherOperationsObserver;
+import prop.engine.processors.observers.PretendOperationsObserver;
 
 @Service
-public class CancelOrderProcessor implements PropProcessor, MapOtherOperationsObserver {
+public class CancelOrderProcessor implements PropProcessor,
+		MapOtherOperationsObserver, PretendOperationsObserver {
 
 	@Override
 	public String getOperationType() {
@@ -26,15 +28,18 @@ public class CancelOrderProcessor implements PropProcessor, MapOtherOperationsOb
 
 	@Override
 	public PropOperation buildOperation(ObjectNode operation, ObjectNode errors) {
-		PropOperation op = new PropOperation();
-		op.setType(getOperationType());
-		// TODO: load operation params
-		return op;
+		return new PropOperation(operation);
 	}
 
 	@Override
 	public PropProcessorObserver getObserver() {
 		return this;
+	}
+
+	@Override
+	public ResultStatus pretend(PatchMessage message, PropOperation operation) {
+		operation.getRealized().put("pretended", true);
+		return ResultStatus.SUCCESS;
 	}
 
 }
